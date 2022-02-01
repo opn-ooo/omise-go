@@ -51,6 +51,12 @@ func (req *ListCharges) Describe() *internal.Description {
 //
 //	fmt.Println("created charge:", charge.ID)
 //
+
+type PlatformFee struct {
+	Percentage float64 `json:"percentage,omitempty"`
+	Fixed      string  `json:"fixed,omitempty"`
+}
+
 type CreateCharge struct {
 	Customer    string                 `json:"customer,omitempty"`
 	Card        string                 `json:"card,omitempty"`
@@ -62,6 +68,7 @@ type CreateCharge struct {
 	DontCapture bool                   `json:"-"` // inverse, since `capture` defaults to true
 	ReturnURI   string                 `json:"return_uri,omitempty"`
 	Metadata    map[string]interface{} `json:"metadata,omitempty"`
+	PlatformFee PlatformFee            `json:"platform_fee,omitempty"`
 }
 
 func (req *CreateCharge) MarshalJSON() ([]byte, error) {
