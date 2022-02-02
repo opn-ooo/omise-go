@@ -54,7 +54,7 @@ func (req *ListCharges) Describe() *internal.Description {
 
 type PlatformFee struct {
 	Percentage float64 `json:"percentage,omitempty"`
-	Fixed      string  `json:"fixed,omitempty"`
+	Fixed      int64   `json:"fixed,omitempty"`
 }
 
 type CreateCharge struct {
