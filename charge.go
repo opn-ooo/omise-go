@@ -9,6 +9,7 @@ type Charge struct {
 	Currency    string       `json:"currency"`
 	Description *string      `json:"description"`
 	Fee         int64        `json:"fee"`
+	FeeVat      int64        `json:"fee_vat"`
 
 	Capture    bool `json:"capture"`
 	Authorized bool `json:"authorized"`
