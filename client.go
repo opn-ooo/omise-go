@@ -223,7 +223,7 @@ func (c *Client) buildFormDataRequest(operation internal.Operation) (*http.Reque
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(form.Encode())
+
 	body := strings.NewReader(form.Encode())
 
 	endpoint := string(desc.Endpoint)
@@ -236,7 +236,6 @@ func (c *Client) buildFormDataRequest(operation internal.Operation) (*http.Reque
 
 func (c *Client) DoWithFormData(result interface{}, operation internal.Operation) error {
 	req, err := c.FormDataRequest(operation)
-	fmt.Println("HERE: ", err)
 	if err != nil {
 		return err
 	}
