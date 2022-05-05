@@ -7,10 +7,14 @@ import (
 	"go/build"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strings"
 
+	"github.com/gorilla/schema"
 	"github.com/omise/omise-go/internal"
 )
+
+var encoder = schema.NewEncoder()
 
 // Client helps you configure and perform HTTP operations against Omise's REST API. It
 // should be used with operation structures from the operations subpackage.
@@ -156,6 +160,82 @@ func (c *Client) setRequestHeaders(req *http.Request, desc *internal.Description
 // which case you can further inspect the Code and Message field for more information.
 func (c *Client) Do(result interface{}, operation internal.Operation) error {
 	req, err := c.Request(operation)
+	if err != nil {
+		return err
+	}
+
+	// response
+	resp, err := c.Client.Do(req)
+	if resp != nil {
+		defer resp.Body.Close()
+	}
+	if err != nil {
+		return err
+	}
+
+	buffer, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return &ErrTransport{err, buffer}
+	}
+
+	switch {
+	case resp.StatusCode != 200:
+		err := &Error{StatusCode: resp.StatusCode}
+		if err := json.Unmarshal(buffer, err); err != nil {
+			return &ErrTransport{err, buffer}
+		}
+
+		return err
+	} // status == 200 && e == nil
+
+	if c.debug {
+		fmt.Println("resp:", resp.StatusCode, string(buffer))
+	}
+
+	if result != nil {
+		if err := json.Unmarshal(buffer, result); err != nil {
+			return &ErrTransport{err, buffer}
+		}
+	}
+
+	return nil
+}
+
+func (c *Client) FormDataRequest(operation internal.Operation) (req *http.Request, err error) {
+	req, err = c.buildFormDataRequest(operation)
+	if err != nil {
+		return nil, err
+	}
+
+	err = c.setRequestHeaders(req, operation.Describe())
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+func (c *Client) buildFormDataRequest(operation internal.Operation) (*http.Request, error) {
+	desc := operation.Describe()
+
+	form := url.Values{}
+	err := encoder.Encode(operation, form)
+	if err != nil {
+		return nil, err
+	}
+
+	body := strings.NewReader(form.Encode())
+
+	endpoint := string(desc.Endpoint)
+	if ep, ok := c.Endpoints[desc.Endpoint]; ok {
+		endpoint = ep
+	}
+
+	return http.NewRequest(desc.Method, endpoint+desc.Path, body)
+}
+
+func (c *Client) DoWithFormData(result interface{}, operation internal.Operation) error {
+	req, err := c.FormDataRequest(operation)
 	if err != nil {
 		return err
 	}

@@ -22,6 +22,8 @@ func (op *Description) KeyKind() (kind string) {
 		kind = op.APIKey
 	case op.Endpoint == API:
 		kind = "secret"
+	case op.Endpoint == APIStaging:
+		kind = "secret"
 	case op.Endpoint == Vault:
 		kind = "public"
 	}
