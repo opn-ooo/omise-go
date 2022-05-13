@@ -8,3 +8,11 @@ type Document struct {
 	Filename    string `json:"filename"`
 	DownloadURI string `json:"download_uri"`
 }
+
+type DocumentOnboard struct {
+	Base
+	Deleted     bool   `json:"deleted"`
+	Filename    string `json:"filename"`
+	DownloadURI string `json:"download_uri"`
+	Kind        string `json:"kind"`
+}
