@@ -24,16 +24,25 @@ func (req *CreateOnboard) Describe() *internal.Description {
 }
 
 type CreateAccountDetail struct {
-	EntityType   string `schema:"account_details[entity_type]"`
-	FullName     string `schema:"account_details[full_name]"`
-	TaxID        string `schema:"account_details[tax_id]"`
-	BirthDate    string `schema:"account_details[birth_date]"`
-	Phone        string `schema:"account_details[phone]"`
-	Mobile       string `schema:"account_details[mobile]"`
-	Address      string `schema:"account_details[address]"`
-	PostalCode   string `schema:"account_details[postal_code]"`
+	// Entity Type
+	EntityType string `schema:"account_details[entity_type]"`
+
+	// Company info (Company) / Business info (Individual)
+	LegalName  string `schema:"account_details[legal_name]"`
+	TaxID      string `schema:"account_details[tax_id]"`
+	Address    string `schema:"account_details[address]"`
+	BranchName string `schema:"account_details[branch]"`
+	PostalCode string `schema:"account_details[postal_code]"`
+
+	// Website
 	WebsiteUrl   string `schema:"account_details[website_url]"`
 	WebsiteNotes string `schema:"account_details[website_notes]"`
+
+	// Signing Authority (Companies) / Contact (Individuals)
+	FullName  string `schema:"account_details[full_name]"`
+	BirthDate string `schema:"account_details[birth_date]"`
+	Phone     string `schema:"account_details[phone]"`
+	Mobile    string `schema:"account_details[mobile]"`
 }
 
 type CreateBusinessDetail struct {
