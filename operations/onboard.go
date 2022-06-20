@@ -54,6 +54,7 @@ type CreateBusinessDetail struct {
 	BasketSize             string `schema:"business_details[basket_size]"`
 	DeliveryMethod         string `schema:"business_details[delivery_method]"`
 	RefundPolicy           string `schema:"business_details[refund_policy]"`
+	Nationality            string `schema:"business_details[nationality]"`
 }
 
 type CreateStateMentDetail struct {
